@@ -43,7 +43,7 @@ The detailed motion-value generation pipeline and landmark-to-robot mapping conc
 <p align="center">
   <img src="assets/02_motion_value_pipeline.png" width="250">
   &nbsp;&nbsp;&nbsp;
-  <img src="assets/03_landmark_to_robot_mapping.png" width="250">
+  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
 </p>
 
 ---
