@@ -41,7 +41,7 @@ Fingertip Tracking Evaluation
 The detailed motion-value generation pipeline and landmark-to-robot mapping concept are shown below.
 
 <p align="center">
-  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
+  <img src="assets/03_landmark_to_robot_mapping.png" width="450">
   &nbsp;&nbsp;&nbsp;
   <img src="assets/02_motion_value_pipeline.png" width="250">
 </p>
