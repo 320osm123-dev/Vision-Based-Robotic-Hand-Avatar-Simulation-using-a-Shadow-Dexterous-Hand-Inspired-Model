@@ -41,10 +41,10 @@ Fingertip Tracking Evaluation
 The detailed motion-value generation pipeline used in this project is shown below.
 
 <p align="center">
-  <img src="assets/02_motion_value_pipeline.png" width="500">
+  <img src="assets/02_motion_value_pipeline.png" width="520">
 </p>
 
-The landmark-to-robot correspondence concept is illustrated as follows.
+The landmark-to-robot mapping concept is illustrated as follows.
 
 <p align="center">
   <img src="assets/03_landmark_to_robot_mapping.png" width="900">
@@ -72,23 +72,23 @@ The landmark-to-robot correspondence concept is illustrated as follows.
 
 | Symbol | Description |
 |---|---|
-| \( P_i \) | i-th MediaPipe hand landmark |
-| \( P_i = (x_i, y_i, z_i) \) | 3D coordinate of the i-th landmark |
-| \( \mathbf{u}, \mathbf{v} \) | Adjacent finger bone vectors |
-| \( \theta \) | Joint angle between two vectors |
-| \( b_f \) | Finger bending value |
-| \( s_f \) | Finger side-spreading value |
-| \( W_p \) | Palm width for normalization |
-| \( \mathbf{v}_{palm} \) | Palm direction vector |
-| \( w_{lr} \) | Wrist left-right motion value |
-| \( \alpha \) | Smoothing parameter |
-| \( u_t^{raw} \) | Raw motion value |
-| \( u_t \) | Filtered motion value |
-| \( c_i \) | Actuator command |
-| \( e_f \) | Fingertip tracking error |
-| \( RMSE \) | Root mean square tracking error |
-| \( Delay \) | Response delay |
-| \( Score \) | Final smoothing-parameter selection score |
+| $P_i$ | i-th MediaPipe hand landmark |
+| $P_i=(x_i,y_i,z_i)$ | 3D coordinate of the i-th landmark |
+| $\mathbf{u}, \mathbf{v}$ | Adjacent finger bone vectors |
+| $\theta$ | Joint angle between two vectors |
+| $b_f$ | Finger bending value |
+| $s_f$ | Finger side-spreading value |
+| $W_p$ | Palm width for normalization |
+| $\mathbf{v}_{palm}$ | Palm direction vector |
+| $w_{lr}$ | Wrist left-right motion value |
+| $\alpha$ | Smoothing parameter |
+| $u_t^{raw}$ | Raw motion value |
+| $u_t$ | Filtered motion value |
+| $c_i$ | Actuator command |
+| $e_f$ | Fingertip tracking error |
+| $RMSE$ | Root mean square tracking error |
+| $Delay$ | Response delay |
+| $Score$ | Final smoothing-parameter selection score |
 
 ---
 
@@ -96,15 +96,15 @@ The landmark-to-robot correspondence concept is illustrated as follows.
 
 Webcam frames were captured using OpenCV and processed with MediaPipe Hand Landmarker. MediaPipe extracts 21 hand landmark positions, including the wrist and finger joints.
 
-Each landmark is defined as:
+Each landmark is represented as a 3D coordinate.
 
-$$
+```math
 P_i = (x_i, y_i, z_i), \quad i = 0,1,\dots,20
-$$
+```
 
-where \(P_0\) is the wrist landmark and the remaining landmarks represent the joints of the thumb, index, middle, ring, and pinky fingers.
+Here, $P_0$ is the wrist landmark, and the remaining landmarks represent the joints of the thumb, index, middle, ring, and pinky fingers.
 
-The extracted landmarks were used to calculate finger bending, finger side-spreading, and wrist lateral motion values.
+The extracted landmark coordinates were used to calculate finger bending, finger side-spreading, and wrist lateral motion values.
 
 ---
 
@@ -114,15 +114,15 @@ The extracted landmarks were used to calculate finger bending, finger side-sprea
 
 Finger bending was calculated using the angle between two adjacent finger bone vectors.
 
-$$
+```math
 \mathbf{u} = P_a - P_b
-$$
+```
 
-$$
+```math
 \mathbf{v} = P_c - P_b
-$$
+```
 
-$$
+```math
 \theta =
 \cos^{-1}
 \left(
@@ -132,13 +132,13 @@ $$
 \|\mathbf{u}\| \, \|\mathbf{v}\|
 }
 \right)
-$$
+```
 
-The calculated angle was normalized into a bending value:
+The calculated angle was normalized into a bending value.
 
-$$
+```math
 b_f = \mathrm{normalize}(\theta)
-$$
+```
 
 A value close to 0 indicates an extended finger, while a value close to 1 indicates a bent finger.
 
@@ -148,20 +148,24 @@ A value close to 0 indicates an extended finger, while a value close to 1 indica
 
 Finger side-spreading was calculated using the lateral displacement between the MCP and PIP landmarks.
 
-$$
-W_p = |x_5 - x_{17}|
-$$
+The palm width was defined as:
 
-$$
+```math
+W_p = |x_5 - x_{17}|
+```
+
+The side-spreading value was calculated as:
+
+```math
 s_f =
 \frac{
 x_{PIP} - x_{MCP}
 }{
 W_p
 }
-$$
+```
 
-where \(W_p\) is the palm width and \(s_f\) is the normalized side-spreading value.
+Here, $s_f$ is not a direct joint angle. It is a normalized lateral spreading value calculated from the landmark coordinates.
 
 ---
 
@@ -169,9 +173,9 @@ where \(W_p\) is the palm width and \(s_f\) is the normalized side-spreading val
 
 Wrist left-right motion was estimated from the palm direction vector between the wrist landmark and the middle finger MCP landmark.
 
-$$
+```math
 \mathbf{v}_{palm} = P_9 - P_0
-$$
+```
 
 The wrist left-right value was calculated from the angle of this palm direction vector and normalized for actuator control.
 
@@ -179,26 +183,22 @@ The wrist left-right value was calculated from the angle of this palm direction 
 
 ## Low-Pass Filter
 
-To reduce frame-to-frame jitter in the estimated motion values, a first-order low-pass filter was applied.
+MediaPipe landmark data can contain small frame-to-frame noise. To reduce jitter, a first-order low-pass filter was applied to the calculated motion values.
 
-$$
+```math
 u_t =
 (1-\alpha)u_{t-1}
 +
 \alpha u_t^{raw}
-$$
+```
 
-where:
+where $u_t^{raw}$ is the raw motion value from the current frame, $u_t$ is the filtered motion value, and $\alpha$ is the smoothing parameter.
 
-- \(u_t^{raw}\) is the raw motion value from the current frame
-- \(u_t\) is the filtered motion value
-- \(\alpha\) is the smoothing parameter
+In this project, $u$ can represent the finger bending value, side-spreading value, or wrist left-right value.
 
-In this project, \(u\) can represent:
-
-$$
+```math
 u \in \{ b_f,\; s_f,\; w_{lr} \}
-$$
+```
 
 A smaller smoothing parameter produces smoother motion but increases response delay. A larger smoothing parameter improves responsiveness but becomes more sensitive to landmark noise.
 
@@ -206,28 +206,26 @@ A smaller smoothing parameter produces smoother motion but increases response de
 
 ## Actuator Command Mapping
 
-The filtered motion values were mapped to the actuator control range of the MuJoCo Shadow Hand model.
+The proposed method does not directly control fingertip positions. Instead, the calculated motion values are mapped to Shadow Hand actuator commands.
 
-$$
+The filtered motion value was mapped to the actuator control range of the MuJoCo Shadow Hand model.
+
+```math
 c_i =
 c_{min,i}
 +
 r_i \left( c_{max,i} - c_{min,i} \right)
-$$
+```
 
-where:
+where $c_i$ is the actuator command, $c_{min,i}$ and $c_{max,i}$ are the minimum and maximum actuator control values, and $r_i$ is the normalized input ratio.
 
-- \(c_i\) is the actuator command
-- \(c_{min,i}\) and \(c_{max,i}\) are the minimum and maximum actuator control values
-- \(r_i\) is the normalized input ratio
+The final actuator command was applied to MuJoCo through `data.ctrl`.
 
-The final command was applied to MuJoCo through:
+```math
+\texttt{data.ctrl}[i] = c_i
+```
 
-$$
-data.ctrl[i] = c_i
-$$
-
-Thus, human hand motion calculated from MediaPipe landmarks was converted into Shadow Hand actuator commands for real-time avatar simulation.
+Through this mapping, human hand motion calculated from MediaPipe landmarks was converted into Shadow Hand actuator commands for real-time avatar simulation.
 
 ---
 
@@ -265,22 +263,22 @@ Since the human hand and Shadow Hand have different joint structures and link le
 
 Fingertip error was calculated to quantitatively evaluate the tracking performance of the robot hand.
 
-The fingertip error for finger \(f\) is defined as:
+The fingertip error for finger $f$ was defined as:
 
-$$
+```math
 e_f(t) =
 \left\|
 \Delta P_f^{human}(t)
 -
 \Delta P_f^{robot}(t)
 \right\|
-$$
+```
 
 where:
 
-$$
+```math
 \Delta P_f(t) = P_f(t) - P_f(0)
-$$
+```
 
 The error increased during fast transition motions such as grasping and opening, and decreased when the hand posture became stable.
 
@@ -296,33 +294,33 @@ The thumb showed a different error pattern because its opposition and rotation m
 
 The smoothing parameter was selected by comparing tracking error and response delay.
 
-The tracking error was evaluated using RMSE:
+The tracking error was evaluated using RMSE.
 
-$$
+```math
 RMSE =
 \sqrt{
 \frac{1}{N}
 \sum_{t=1}^{N}
 e_{overall}(t)^2
 }
-$$
+```
 
-Because RMSE and delay have different units, min-max normalization was applied:
+Because RMSE and delay have different units, min-max normalization was applied.
 
-$$
+```math
 \hat{x} =
 \frac{x - x_{min}}
 {x_{max} - x_{min}}
-$$
+```
 
 The final score was calculated as:
 
-$$
+```math
 Score =
 0.5 \hat{RMSE}
 +
 0.5 \hat{Delay}
-$$
+```
 
 The smoothing parameter with the lowest score was selected.
 
