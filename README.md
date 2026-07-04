@@ -47,7 +47,7 @@ The detailed motion-value generation pipeline used in this project is shown belo
 The landmark-to-robot mapping concept is illustrated as follows.
 
 <p align="center">
-  <img src="assets/03_landmark_to_robot_mapping.png" width="600">
+  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
 </p>
 
 ---
@@ -240,7 +240,7 @@ Fingertip displacement was calculated from the initial position of each finger. 
 This confirms that the MediaPipe landmark data properly captured the input hand motion.
 
 <p align="center">
-  <img src="assets/04_input_trajectory.png" width="900">
+  <img src="assets/04_input_trajectory.png" width="400">
 </p>
 
 ---
@@ -254,7 +254,7 @@ The robot hand displacement changed according to the grasping and opening motion
 Since the human hand and Shadow Hand have different joint structures and link lengths, the trajectories are not completely identical. Therefore, the main evaluation focus was the overall tracking trend rather than exact position matching.
 
 <p align="center">
-  <img src="assets/05_tracking_comparison.png" width="900">
+  <img src="assets/05_tracking_comparison.png" width="400">
 </p>
 
 ---
@@ -285,7 +285,7 @@ The error increased during fast transition motions such as grasping and opening,
 The thumb showed a different error pattern because its opposition and rotation motion is more complex than the other fingers.
 
 <p align="center">
-  <img src="assets/06_fingertip_error.png" width="900">
+  <img src="assets/06_fingertip_error.png" width="400">
 </p>
 
 ---
@@ -325,7 +325,7 @@ Score =
 The smoothing parameter with the lowest score was selected.
 
 <p align="center">
-  <img src="assets/07_smoothing_parameter_selection.png" width="900">
+  <img src="assets/07_smoothing_parameter_selection.png" width="400">
 </p>
 
 ---
