@@ -13,7 +13,7 @@ The objective of this project is to retarget human hand motion to a robot hand w
 The overall system consists of webcam-based hand motion capture, hand pose estimation, motion value calculation, and Shadow Hand avatar simulation.
 
 <p align="center">
-  <img src="assets/01_system_overview.png" width="900">
+  <img src="assets/01_system_overview.png" width="600">
 </p>
 
 ---
