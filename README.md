@@ -13,7 +13,7 @@ The objective of this project is to retarget human hand motion to a robot hand w
 The overall system consists of webcam-based hand motion capture, hand pose estimation, motion value calculation, and Shadow Hand avatar simulation.
 
 <p align="center">
-  <img src="01_system_overview.png" width="600">
+  <img src="assets/01_system_overview.png" width="600">
 </p>
 
 ---
@@ -41,9 +41,9 @@ Fingertip Tracking Evaluation
 The detailed motion-value generation pipeline and landmark-to-robot mapping concept are shown below.
 
 <p align="center">
-  <img src="02_motion_value_pipeline.png" width="200">
+  <img src="assets/02_motion_value_pipeline.png" width="200">
   &nbsp;&nbsp;&nbsp;
-  <img src="03_landmark_to_robot_mapping.png" width="400">
+  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
 </p>
 
 ---
@@ -230,7 +230,7 @@ Through this mapping, human hand motion calculated from MediaPipe landmarks was 
 ### 1. Input Trajectory
 
 <p align="center">
-  <img src="04_input_trajectory.png" width="400">
+  <img src="assets/04_input_trajectory.png" width="400">
 </p>
 
 The input trajectory was used to verify whether the human hand motion was correctly captured from the webcam.
@@ -244,7 +244,7 @@ This confirms that the MediaPipe landmark data properly captured the input hand 
 ### 2. Tracking Comparison
 
 <p align="center">
-  <img src="05_tracking_comparison.png" width="400">
+  <img src="assets/05_tracking_comparison.png" width="400">
 </p>
 
 The tracking comparison graph compares the fingertip displacement of the human hand and the MuJoCo Shadow Hand.
@@ -258,7 +258,7 @@ Since the human hand and Shadow Hand have different joint structures and link le
 ### 3. Fingertip Error
 
 <p align="center">
-  <img src="06_fingertip_error.png" width="400">
+  <img src="assets/06_fingertip_error.png" width="400">
 </p>
 
 Fingertip error was calculated to quantitatively evaluate the tracking performance of the robot hand.
@@ -289,7 +289,7 @@ The thumb showed a different error pattern because its opposition and rotation m
 ### 4. Smoothing Parameter Selection
 
 <p align="center">
-  <img src="07_smoothing_parameter_selection.png" width="400">
+  <img src="assets/07_smoothing_parameter_selection.png" width="400">
 </p>
 
 The smoothing parameter was selected by comparing tracking error and response delay.
