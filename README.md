@@ -41,10 +41,32 @@ Fingertip Tracking Evaluation
 The detailed motion-value generation pipeline and landmark-to-robot mapping concept are shown below.
 
 <p align="center">
-  <img src="assets/03_landmark_to_robot_mapping.png" width="450">
+  <img src="assets/02_motion_value_pipeline.png" width="200">
   &nbsp;&nbsp;&nbsp;
-  <img src="assets/02_motion_value_pipeline.png" width="250">
+  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
 </p>
+
+---
+
+## Experiment Workflow
+
+The experiment was conducted by first recording raw hand landmark data from the webcam.  
+After recording, the same raw data was replayed with different smoothing parameter values to compare tracking error and response delay under identical input conditions.
+
+```mermaid
+flowchart LR
+    A[Webcam-based Hand Motion Recording] --> B[Raw Landmark Data Logging]
+    B --> C[Raw Input Trajectory Extraction]
+    C --> D[Replay with Different Smoothing Parameters]
+    D --> E[MuJoCo Shadow Hand Simulation]
+    E --> F[Fingertip Tracking Error Calculation]
+    F --> G[RMSE and Delay Comparison]
+    G --> H[Smoothing Parameter Selection]
+    H --> I[Result Graph Generation]
+```
+
+This workflow allows each smoothing parameter to be evaluated using the same input motion data.  
+Therefore, the comparison between smoothing parameters is based on identical hand motion rather than different real-time trials.
 
 ---
 
