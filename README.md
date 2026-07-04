@@ -13,7 +13,7 @@ The objective of this project is to retarget human hand motion to a robot hand w
 The overall system consists of webcam-based hand motion capture, hand pose estimation, motion value calculation, and Shadow Hand avatar simulation.
 
 <p align="center">
-  <img src="assets/01_system_overview.png" width="600">
+  <img src="01_system_overview.png" width="600">
 </p>
 
 ---
@@ -38,16 +38,12 @@ MuJoCo Shadow Hand Avatar Simulation
 Fingertip Tracking Evaluation
 ```
 
-The detailed motion-value generation pipeline used in this project is shown below.
+The detailed motion-value generation pipeline and landmark-to-robot mapping concept are shown below.
 
 <p align="center">
-  <img src="assets/02_motion_value_pipeline.png" width="200">
-</p>
-
-The landmark-to-robot mapping concept is illustrated as follows.
-
-<p align="center">
-  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
+  <img src="02_motion_value_pipeline.png" width="200">
+  &nbsp;&nbsp;&nbsp;
+  <img src="03_landmark_to_robot_mapping.png" width="400">
 </p>
 
 ---
@@ -233,19 +229,23 @@ Through this mapping, human hand motion calculated from MediaPipe landmarks was 
 
 ### 1. Input Trajectory
 
+<p align="center">
+  <img src="04_input_trajectory.png" width="400">
+</p>
+
 The input trajectory was used to verify whether the human hand motion was correctly captured from the webcam.
 
 Fingertip displacement was calculated from the initial position of each finger. During repeated grasping and opening motion, the displacement increased and decreased periodically.
 
 This confirms that the MediaPipe landmark data properly captured the input hand motion.
 
-<p align="center">
-  <img src="assets/04_input_trajectory.png" width="400">
-</p>
-
 ---
 
 ### 2. Tracking Comparison
+
+<p align="center">
+  <img src="05_tracking_comparison.png" width="400">
+</p>
 
 The tracking comparison graph compares the fingertip displacement of the human hand and the MuJoCo Shadow Hand.
 
@@ -253,13 +253,13 @@ The robot hand displacement changed according to the grasping and opening motion
 
 Since the human hand and Shadow Hand have different joint structures and link lengths, the trajectories are not completely identical. Therefore, the main evaluation focus was the overall tracking trend rather than exact position matching.
 
-<p align="center">
-  <img src="assets/05_tracking_comparison.png" width="400">
-</p>
-
 ---
 
 ### 3. Fingertip Error
+
+<p align="center">
+  <img src="06_fingertip_error.png" width="400">
+</p>
 
 Fingertip error was calculated to quantitatively evaluate the tracking performance of the robot hand.
 
@@ -284,13 +284,13 @@ The error increased during fast transition motions such as grasping and opening,
 
 The thumb showed a different error pattern because its opposition and rotation motion is more complex than the other fingers.
 
-<p align="center">
-  <img src="assets/06_fingertip_error.png" width="400">
-</p>
-
 ---
 
 ### 4. Smoothing Parameter Selection
+
+<p align="center">
+  <img src="07_smoothing_parameter_selection.png" width="400">
+</p>
 
 The smoothing parameter was selected by comparing tracking error and response delay.
 
@@ -323,10 +323,6 @@ Score =
 ```
 
 The smoothing parameter with the lowest score was selected.
-
-<p align="center">
-  <img src="assets/07_smoothing_parameter_selection.png" width="400">
-</p>
 
 ---
 
