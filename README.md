@@ -41,9 +41,9 @@ Fingertip Tracking Evaluation
 The detailed motion-value generation pipeline and landmark-to-robot mapping concept are shown below.
 
 <p align="center">
-  <img src="assets/02_motion_value_pipeline.png" width="200">
-  &nbsp;&nbsp;&nbsp;
   <img src="assets/03_landmark_to_robot_mapping.png" width="400">
+  &nbsp;&nbsp;&nbsp;
+  <img src="assets/02_motion_value_pipeline.png" width="200">
 </p>
 
 In this pipeline, the MediaPipe hand landmarks are converted into three motion values: finger bending angle, finger side-spreading value, and wrist lateral angle. These values are represented as $\theta_{bend}$, $s_{side}$, and $\theta_{wrist}$.
