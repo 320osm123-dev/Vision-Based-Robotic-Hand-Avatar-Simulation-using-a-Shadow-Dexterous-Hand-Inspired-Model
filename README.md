@@ -1,4 +1,4 @@
-# Webcam-based Shadow Hand Avatar Simulation
+# Vision-Based Robotic Hand Avatar Simulation
 
 ## Project Overview
 
