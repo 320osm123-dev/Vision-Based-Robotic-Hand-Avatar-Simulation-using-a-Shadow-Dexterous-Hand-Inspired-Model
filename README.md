@@ -41,32 +41,12 @@ Fingertip Tracking Evaluation
 The detailed motion-value generation pipeline and landmark-to-robot mapping concept are shown below.
 
 <p align="center">
-  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
-  &nbsp;&nbsp;&nbsp;
   <img src="assets/02_motion_value_pipeline.png" width="200">
+  &nbsp;&nbsp;&nbsp;
+  <img src="assets/03_landmark_to_robot_mapping.png" width="400">
 </p>
 
----
-
-## Experiment Workflow
-
-The experiment was conducted by first recording raw hand landmark data from the webcam.  
-After recording, the same raw data was replayed with different smoothing parameter values to compare tracking error and response delay under identical input conditions.
-
-```mermaid
-flowchart LR
-    A[Webcam-based Hand Motion Recording] --> B[Raw Landmark Data Logging]
-    B --> C[Raw Input Trajectory Extraction]
-    C --> D[Replay with Different Smoothing Parameters]
-    D --> E[MuJoCo Shadow Hand Simulation]
-    E --> F[Fingertip Tracking Error Calculation]
-    F --> G[RMSE and Delay Comparison]
-    G --> H[Smoothing Parameter Selection]
-    H --> I[Result Graph Generation]
-```
-
-This workflow allows each smoothing parameter to be evaluated using the same input motion data.  
-Therefore, the comparison between smoothing parameters is based on identical hand motion rather than different real-time trials.
+In this pipeline, the MediaPipe hand landmarks are converted into three motion values: finger bending angle, finger side-spreading value, and wrist lateral angle. These values are represented as $\theta_{bend}$, $s_{side}$, and $\theta_{wrist}$.
 
 ---
 
@@ -93,12 +73,12 @@ Therefore, the comparison between smoothing parameters is based on identical han
 | $P_i$ | i-th MediaPipe hand landmark |
 | $P_i=(x_i,y_i,z_i)$ | 3D coordinate of the i-th landmark |
 | $\mathbf{u}, \mathbf{v}$ | Adjacent finger bone vectors |
-| $\theta$ | Joint angle between two vectors |
-| $b_f$ | Finger bending value |
-| $s_f$ | Finger side-spreading value |
+| $\theta_{bend}$ | Finger bending angle calculated from adjacent landmarks |
+| $b_f$ | Normalized finger bending value |
+| $s_{side}$ | Normalized finger side-spreading value |
 | $W_p$ | Palm width for normalization |
 | $\mathbf{v}_{palm}$ | Palm direction vector |
-| $w_{lr}$ | Wrist left-right motion value |
+| $\theta_{wrist}$ | Wrist lateral angle |
 | $\alpha$ | Smoothing parameter |
 | $u_t^{raw}$ | Raw motion value |
 | $u_t$ | Filtered motion value |
@@ -128,7 +108,7 @@ The extracted landmark coordinates were used to calculate finger bending, finger
 
 ## Motion Value Calculation
 
-### 1. Finger Bending Value
+### 1. Finger Bending Angle
 
 Finger bending was calculated using the angle between two adjacent finger bone vectors.
 
@@ -141,7 +121,7 @@ Finger bending was calculated using the angle between two adjacent finger bone v
 ```
 
 ```math
-\theta =
+\theta_{bend} =
 \cos^{-1}
 \left(
 \frac{
@@ -152,10 +132,10 @@ Finger bending was calculated using the angle between two adjacent finger bone v
 \right)
 ```
 
-The calculated angle was normalized into a bending value.
+The calculated bending angle was normalized into a bending value.
 
 ```math
-b_f = \mathrm{normalize}(\theta)
+b_f = \mathrm{normalize}(\theta_{bend})
 ```
 
 A value close to 0 indicates an extended finger, while a value close to 1 indicates a bent finger.
@@ -175,7 +155,7 @@ W_p = |x_5 - x_{17}|
 The side-spreading value was calculated as:
 
 ```math
-s_f =
+s_{side} =
 \frac{
 x_{PIP} - x_{MCP}
 }{
@@ -183,11 +163,11 @@ W_p
 }
 ```
 
-Here, $s_f$ is not a direct joint angle. It is a normalized lateral spreading value calculated from the landmark coordinates.
+Here, $s_{side}$ is not a direct joint angle. It is a normalized lateral spreading value calculated from the landmark coordinates.
 
 ---
 
-### 3. Wrist Left-right Motion Value
+### 3. Wrist Lateral Angle
 
 Wrist left-right motion was estimated from the palm direction vector between the wrist landmark and the middle finger MCP landmark.
 
@@ -195,7 +175,18 @@ Wrist left-right motion was estimated from the palm direction vector between the
 \mathbf{v}_{palm} = P_9 - P_0
 ```
 
-The wrist left-right value was calculated from the angle of this palm direction vector and normalized for actuator control.
+The wrist lateral angle was calculated from this palm direction vector.
+
+```math
+\theta_{wrist} =
+\mathrm{atan2}
+\left(
+x_9 - x_0,
+-(y_9 - y_0)
+\right)
+```
+
+The calculated wrist angle was then normalized and mapped to the wrist actuator command.
 
 ---
 
@@ -212,10 +203,10 @@ u_t =
 
 where $u_t^{raw}$ is the raw motion value from the current frame, $u_t$ is the filtered motion value, and $\alpha$ is the smoothing parameter.
 
-In this project, $u$ can represent the finger bending value, side-spreading value, or wrist left-right value.
+In this project, $u$ can represent the finger bending value, side-spreading value, or wrist lateral angle.
 
 ```math
-u \in \{ b_f,\; s_f,\; w_{lr} \}
+u \in \{ b_f,\; s_{side},\; \theta_{wrist} \}
 ```
 
 A smaller smoothing parameter produces smoother motion but increases response delay. A larger smoothing parameter improves responsiveness but becomes more sensitive to landmark noise.
@@ -249,6 +240,8 @@ Through this mapping, human hand motion calculated from MediaPipe landmarks was 
 
 ## Simulation Result & Analysis
 
+The same recorded raw hand landmark data was replayed with different smoothing parameter values to compare tracking error and response delay under identical input conditions.
+
 ### 1. Input Trajectory
 
 <p align="center">
@@ -257,9 +250,9 @@ Through this mapping, human hand motion calculated from MediaPipe landmarks was 
 
 The input trajectory was used to verify whether the human hand motion was correctly captured from the webcam.
 
-Fingertip displacement was calculated from the initial position of each finger. During repeated grasping and opening motion, the displacement increased and decreased periodically.
+In this graph, the fingertip displacement value represents how much each human fingertip moved from its initial position. A larger displacement means that the corresponding finger moved more actively during the motion.
 
-This confirms that the MediaPipe landmark data properly captured the input hand motion.
+The repeated increase and decrease of the displacement indicates that the grasping and opening motion was successfully recorded. Therefore, this graph confirms that the raw MediaPipe landmark data contains a usable hand motion pattern for replay-based simulation.
 
 ---
 
@@ -269,11 +262,11 @@ This confirms that the MediaPipe landmark data properly captured the input hand 
   <img src="assets/05_tracking_comparison.png" width="400">
 </p>
 
-The tracking comparison graph compares the fingertip displacement of the human hand and the MuJoCo Shadow Hand.
+The tracking comparison graph shows the displacement of the human fingertip and the MuJoCo Shadow Hand fingertip over time.
 
-The robot hand displacement changed according to the grasping and opening motion of the human hand. This shows that the landmark-based motion values were successfully converted into Shadow Hand avatar motion.
+In this graph, the similarity between the human trajectory and the robot trajectory indicates how well the robot hand follows the input hand motion. If the two curves increase and decrease at similar timing, it means that the actuator mapping successfully reproduces the overall motion trend.
 
-Since the human hand and Shadow Hand have different joint structures and link lengths, the trajectories are not completely identical. Therefore, the main evaluation focus was the overall tracking trend rather than exact position matching.
+The difference between the two curves represents tracking mismatch caused by the structural difference between the human hand and the Shadow Hand. Therefore, this graph was used to check whether the robot hand follows the general motion pattern rather than perfectly matching the exact fingertip position.
 
 ---
 
@@ -302,9 +295,11 @@ where:
 \Delta P_f(t) = P_f(t) - P_f(0)
 ```
 
-The error increased during fast transition motions such as grasping and opening, and decreased when the hand posture became stable.
+In this graph, a lower error value means that the robot fingertip movement is closer to the human fingertip movement. A higher error value means that the robot hand failed to follow the human motion accurately at that moment.
 
-The thumb showed a different error pattern because its opposition and rotation motion is more complex than the other fingers.
+The error tends to increase during fast transition motions, such as grasping or opening, because the robot actuator response and the filtered landmark input cannot change instantly. On the other hand, the error decreases when the hand posture becomes stable.
+
+This graph was used to identify which fingers showed larger tracking mismatch and when the tracking error mainly occurred.
 
 ---
 
@@ -327,6 +322,10 @@ e_{overall}(t)^2
 }
 ```
 
+RMSE represents the overall tracking error during the entire motion. A lower RMSE means that the robot hand followed the human hand motion more accurately.
+
+Response delay represents how late the robot hand responds to the human hand motion. A smaller delay means that the robot hand reacts more quickly.
+
 Because RMSE and delay have different units, min-max normalization was applied.
 
 ```math
@@ -344,7 +343,9 @@ Score =
 0.5 \hat{Delay}
 ```
 
-The smoothing parameter with the lowest score was selected.
+In this graph, the smoothing parameter with the lowest score was selected as the best value because it provides the best balance between tracking accuracy and response speed.
+
+A smaller smoothing parameter reduces jitter but increases delay, while a larger smoothing parameter improves response speed but becomes more sensitive to landmark noise.
 
 ---
 
