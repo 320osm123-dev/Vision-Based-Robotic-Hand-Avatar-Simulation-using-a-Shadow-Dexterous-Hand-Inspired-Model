@@ -21,23 +21,6 @@ The overall system consists of webcam-based hand motion capture, hand pose estim
 
 ## System Pipeline
 
-```text
-Webcam Frame Input
-      ↓
-MediaPipe Hand Pose Estimation
-      ↓
-21 Hand Landmark Positions
-      ↓
-Finger Bend / Finger Side / Wrist LR Calculation
-      ↓
-Low-Pass Filter
-      ↓
-Actuator Command Mapping
-      ↓
-MuJoCo Shadow Hand Avatar Simulation
-      ↓
-Fingertip Tracking Evaluation
-```
 
 The detailed motion-value generation pipeline and landmark-to-robot mapping concept are shown below.
 
