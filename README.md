@@ -362,10 +362,8 @@ The tracking performance was evaluated using fingertip error, RMSE, response del
 
 ## Limitations and Future Work
 
-The human hand and Shadow Hand have different joint structures and degrees of freedom, which makes exact fingertip matching difficult.
+The human hand and the Shadow Hand have different joint structures and degrees of freedom, making exact fingertip correspondence difficult. Thumb motion is particularly challenging to reproduce because of its opposition and complex rotational movement. In addition, vision-only motion capture based on MediaPipe is affected by occlusion, viewpoint changes, and landmark estimation noise, which can reduce the stability and accuracy of robot hand motion.
 
-Thumb motion is especially difficult to reproduce because it includes opposition and complex rotation. MediaPipe landmark noise can also affect the stability of the robot hand motion.
+The current implementation employs an angle-based actuator mapping method rather than directly solving inverse kinematics for fingertip positions. While this approach enables stable real-time avatar control, it does not guarantee accurate fingertip position correspondence.
 
-The current implementation uses an angle-based actuator mapping method instead of directly solving inverse kinematics for fingertip positions. This approach provides stable real-time avatar control, but it does not guarantee exact fingertip position matching.
-
-Future work will focus on improving motion retargeting accuracy using inverse kinematics, robot landmark correspondence, or learning-based mapping methods.
+Future work will focus on improving motion retargeting accuracy through inverse kinematics, robot–human hand correspondence, and learning-based mapping methods. To overcome the limitations of vision-only motion capture, wearable human interfaces may also be integrated to measure hand motion more reliably and support more accurate and intuitive avatar teleoperation.
